@@ -106,6 +106,8 @@ void ChessGame::printBoard() {
         std::cout << y << std::endl;
     }
     std::cout << "  0 1 2 3 4 5 6 7" << std::endl << std::endl;
+    std::cout << "Tura gracza: " << (currentPlayer == Color::WHITE ? "Białe" : "Czarne") << std::endl << std::endl;
+
 }
 
 void ChessGame::saveGame(const std::string& filename) {
