@@ -1,4 +1,5 @@
 #include "ChessGame.h"
+#include <fstream>
 
 ChessGame::ChessGame() : board(8, std::vector<Piece*>(8, nullptr)), currentPlayer(Color::WHITE), enPassantTarget({-1, -1}) {
     initializeBoard();
@@ -105,4 +106,79 @@ void ChessGame::printBoard() {
         std::cout << y << std::endl;
     }
     std::cout << "  0 1 2 3 4 5 6 7" << std::endl << std::endl;
+}
+
+void ChessGame::saveGame(const std::string& filename) {
+    std::ofstream outFile(filename);
+    if (!outFile) {
+        std::cerr << "Nie można otworzyć pliku do zapisu!" << std::endl;
+        return;
+    }
+
+    outFile << (currentPlayer == Color::WHITE ? "WHITE" : "BLACK") << std::endl;
+    outFile << enPassantTarget.first << " " << enPassantTarget.second << std::endl;
+
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            if (board[x][y] == nullptr) {
+                outFile << ".";
+            } else {
+                char symbol = '?';
+                switch (board[x][y]->type) {
+                    case PieceType::KING:   symbol = 'K'; break;
+                    case PieceType::QUEEN:  symbol = 'Q'; break;
+                    case PieceType::ROOK:   symbol = 'R'; break;
+                    case PieceType::BISHOP: symbol = 'B'; break;
+                    case PieceType::KNIGHT: symbol = 'N'; break;
+                    case PieceType::PAWN:   symbol = 'P'; break;
+                    default:                symbol = '?'; break;
+                }
+                if (board[x][y]->color == Color::BLACK) {
+                    symbol = tolower(symbol);
+                }
+                outFile << symbol;
+            }
+        }
+        outFile << std::endl;
+    }
+
+    outFile.close();
+}
+
+void ChessGame::loadGame(const std::string& filename) {
+    std::ifstream inFile(filename);
+    if (!inFile) {
+        std::cerr << "Nie można otworzyć pliku do odczytu!" << std::endl;
+        return;
+    }
+
+    std::string currentPlayerStr;
+    inFile >> currentPlayerStr;
+    currentPlayer = (currentPlayerStr == "WHITE") ? Color::WHITE : Color::BLACK;
+
+    inFile >> enPassantTarget.first >> enPassantTarget.second;
+
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            char symbol;
+            inFile >> symbol;
+            if (symbol == '.') {
+                delete board[x][y];
+                board[x][y] = nullptr;
+            } else {
+                Color color = isupper(symbol) ? Color::WHITE : Color::BLACK;
+                switch (tolower(symbol)) {
+                    case 'k': board[x][y] = new King(color); break;
+                    case 'q': board[x][y] = new Queen(color); break;
+                    case 'r': board[x][y] = new Rook(color); break;
+                    case 'b': board[x][y] = new Bishop(color); break;
+                    case 'n': board[x][y] = new Knight(color); break;
+                    case 'p': board[x][y] = new Pawn(color); break;
+                    default: board[x][y] = nullptr; break;
+                }
+            }
+        }
+    }
+
+    inFile.close();
 }

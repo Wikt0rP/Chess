@@ -2,12 +2,15 @@
 #define CHESSGAME_H
 
 #include "Piece.h"
+#include <vector>
+#include <utility>
+#include <string>
 
 class ChessGame {
 private:
-    vector<vector<Piece*>> board;
+    std::vector<std::vector<Piece*>> board;
     Color currentPlayer;
-    pair<int, int> enPassantTarget; // Dodane do śledzenia celu bicia w przelocie
+    std::pair<int, int> enPassantTarget; // Dodane do śledzenia celu bicia w przelocie
 
 public:
     ChessGame();
@@ -15,6 +18,8 @@ public:
     void initializeBoard();
     bool movePiece(int startX, int startY, int endX, int endY);
     void printBoard();
+    void saveGame(const std::string& filename);
+    void loadGame(const std::string& filename);
 };
 
 #endif // CHESSGAME_H
