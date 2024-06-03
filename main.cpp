@@ -24,3 +24,19 @@ int main() {
 
     return 0;
 }
+/*Bicie w przelocie
+
+Ruch piona białego o dwa pola do przodu:
+Wprowadź: startX: 4, startY: 1, endX: 4, endY: 3
+Ruch piona czarnego o dwa pola do przodu obok białego piona:
+Wprowadź: startX: 5, startY: 6, endX: 5, endY: 4
+Bicie w przelocie przez białego piona:
+Wprowadź: startX: 4, startY: 3, endX: 5, endY: 4
+Normalne bicie
+
+Ruch piona białego do przodu:
+Wprowadź: startX: 4, startY: 1, endX: 4, endY: 3
+Ruch piona czarnego do przodu:
+Wprowadź: startX: 3, startY: 6, endX: 3, endY: 4
+Normalne bicie przez białego piona:
+Wprowadź: startX: 4, startY: 3, endX: 3, endY: 4*/

@@ -7,6 +7,7 @@ class ChessGame {
 private:
     vector<vector<Piece*>> board;
     Color currentPlayer;
+    pair<int, int> enPassantTarget; // Dodane do śledzenia celu bicia w przelocie
 
 public:
     ChessGame();

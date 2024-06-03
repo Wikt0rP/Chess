@@ -1,6 +1,6 @@
 #include "ChessGame.h"
 
-ChessGame::ChessGame() : board(8, vector<Piece*>(8, nullptr)), currentPlayer(Color::WHITE) {
+ChessGame::ChessGame() : board(8, std::vector<Piece*>(8, nullptr)), currentPlayer(Color::WHITE), enPassantTarget({-1, -1}) {
     initializeBoard();
 }
 
@@ -37,24 +37,53 @@ bool ChessGame::movePiece(int startX, int startY, int endX, int endY) {
     }
 
     Piece* piece = board[startX][startY];
-    if (piece == nullptr || piece->color != currentPlayer || !piece->isValidMove(startX, startY, endX, endY, board)) {
+    if (piece == nullptr || piece->color != currentPlayer) {
+        return false;
+    }
+
+    // Obsługa bicia w przelocie
+    if (piece->type == PieceType::PAWN) {
+        Pawn* pawn = static_cast<Pawn*>(piece);
+        if (pawn->canEnPassant(startX, startY, endX, endY, board, enPassantTarget)) {
+            delete board[endX][endY];
+            board[endX][endY] = piece;
+            board[startX][startY] = nullptr;
+            delete board[enPassantTarget.first][enPassantTarget.second];
+            board[enPassantTarget.first][enPassantTarget.second] = nullptr;
+            currentPlayer = (currentPlayer == Color::WHITE) ? Color::BLACK : Color::WHITE;
+            enPassantTarget = {-1, -1}; // Resetowanie celu bicia w przelocie
+            return true;
+        }
+    }
+
+    if (!piece->isValidMove(startX, startY, endX, endY, board) &&
+        !(piece->type == PieceType::PAWN && static_cast<Pawn*>(piece)->isValidCapture(startX, startY, endX, endY, board))) {
         return false;
     }
 
     delete board[endX][endY];
     board[endX][endY] = piece;
     board[startX][startY] = nullptr;
+    piece->hasMoved = true;
     currentPlayer = (currentPlayer == Color::WHITE) ? Color::BLACK : Color::WHITE;
+
+    // Ustawianie celu bicia w przelocie
+    if (piece->type == PieceType::PAWN && abs(startY - endY) == 2) {
+        enPassantTarget = {endX, (startY + endY) / 2};
+    } else {
+        enPassantTarget = {-1, -1};
+    }
+
     return true;
 }
 
 void ChessGame::printBoard() {
-    cout << "  0 1 2 3 4 5 6 7" << endl;
+    std::cout << "  0 1 2 3 4 5 6 7" << std::endl;
     for (int y = 7; y >= 0; --y) {
-        cout << y << " ";
+        std::cout << y << " ";
         for (int x = 0; x < 8; ++x) {
             if (board[x][y] == nullptr) {
-                cout << ".";
+                std::cout << ".";
             } else {
                 char symbol = '?';
                 switch (board[x][y]->type) {
@@ -69,11 +98,11 @@ void ChessGame::printBoard() {
                 if (board[x][y]->color == Color::BLACK) {
                     symbol = tolower(symbol);
                 }
-                cout << symbol;
+                std::cout << symbol;
             }
-            cout << " ";
+            std::cout << " ";
         }
-        cout << y << endl;
+        std::cout << y << std::endl;
     }
-    cout << "  0 1 2 3 4 5 6 7" << endl << endl;
+    std::cout << "  0 1 2 3 4 5 6 7" << std::endl << std::endl;
 }
