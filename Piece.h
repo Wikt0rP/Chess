@@ -14,7 +14,7 @@ class Piece {
 public:
     PieceType type;
     Color color;
-    bool hasMoved; // dodane do śledzenia ruchów
+    bool hasMoved;
     Piece(PieceType t = PieceType::NONE, Color c = Color::NONE) : type(t), color(c), hasMoved(false) {}
     virtual bool isValidMove(int startX, int startY, int endX, int endY, const vector<vector<Piece*>>& board) = 0;
 };

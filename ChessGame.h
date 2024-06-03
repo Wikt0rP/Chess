@@ -10,7 +10,7 @@ class ChessGame {
 private:
     std::vector<std::vector<Piece*>> board;
     Color currentPlayer;
-    std::pair<int, int> enPassantTarget; // Dodane do śledzenia celu bicia w przelocie
+    std::pair<int, int> enPassantTarget;
 
 public:
     ChessGame();
