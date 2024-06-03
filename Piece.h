@@ -14,7 +14,8 @@ class Piece {
 public:
     PieceType type;
     Color color;
-    Piece(PieceType t = PieceType::NONE, Color c = Color::NONE) : type(t), color(c) {}
+    bool hasMoved;
+    Piece(PieceType t = PieceType::NONE, Color c = Color::NONE) : type(t), color(c), hasMoved(false) {}
     virtual bool isValidMove(int startX, int startY, int endX, int endY, const vector<vector<Piece*>>& board) = 0;
 };
 
@@ -52,6 +53,8 @@ class Pawn : public Piece {
 public:
     Pawn(Color c) : Piece(PieceType::PAWN, c) {}
     bool isValidMove(int startX, int startY, int endX, int endY, const vector<vector<Piece*>>& board) override;
+    bool isValidCapture(int startX, int startY, int endX, int endY, const vector<vector<Piece*>>& board);
+    bool canEnPassant(int startX, int startY, int endX, int endY, const vector<vector<Piece*>>& board, pair<int, int> enPassantTarget);
 };
 
 #endif // PIECE_H
