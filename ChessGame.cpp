@@ -68,7 +68,6 @@ bool ChessGame::movePiece(int startX, int startY, int endX, int endY) {
     piece->hasMoved = true;
     currentPlayer = (currentPlayer == Color::WHITE) ? Color::BLACK : Color::WHITE;
 
-    // Ustawianie celu bicia w przelocie
     if (piece->type == PieceType::PAWN && abs(startY - endY) == 2) {
         enPassantTarget = {endX, (startY + endY) / 2};
     } else {
